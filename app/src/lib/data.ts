@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { maxUint256, type Address } from 'viem';
 import { brokerAbi, erc20Abi, feedAbi } from './abi';
-import { brokerAddress, startBlock, STOCK_INFO } from './config';
+import { brokerAddress, startBlock, STOCK_INFO, relayerUrl } from './config';
 import { publicClient, triggerTick } from './chain';
 import { e18, toNum } from './format';
 
@@ -181,3 +181,10 @@ export function portfolioSeries(market: Market, p: Portfolio, from: number, to: 
 export const needsApproval = (allowance: bigint, amount: bigint) => allowance < amount;
 export const MAX = maxUint256;
 export function useRefresh() { const qc = useQueryClient(); return () => qc.invalidateQueries(); }
+
+// ---------------------------------------------------------------- news
+export interface NewsItem { id: string; title: string; publisher: string; link: string; time: number; thumb: string | null; tickers: string[] }
+export const useNews = () => useQuery({
+  queryKey: ['news'], enabled: !!relayerUrl, staleTime: 240_000, refetchInterval: 300_000,
+  queryFn: async (): Promise<NewsItem[]> => { const r = await fetch(`${relayerUrl}/news`); if (!r.ok) throw new Error('news'); return (await r.json()).items ?? []; },
+});
