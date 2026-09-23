@@ -8,6 +8,7 @@ import { RangeTabs } from '../components/RangeTabs';
 import { RollingNumber } from '../components/Motion';
 import { Button, Change, SectionTitle, Skeleton, StockLogo } from '../components/ui';
 import { StockRow } from '../components/StockRow';
+import { GetStarted, TopMovers, NewsFeed } from '../components/HomeExtras';
 import { usd, ngn, toNum, e18, frequencyLabel, dateLabel } from '../lib/format';
 
 export function Home() {
@@ -49,7 +50,9 @@ export function Home() {
           </>
         ) : <><Skeleton className="h-12 w-56" /><Skeleton className="mt-2 h-5 w-40" /></>}
 
-        {empty ? (
+        {!empty && held.length === 0 && market && portfolio ? (
+          <GetStarted />
+        ) : empty ? (
           <div className="mt-8 rounded-3xl bg-bg-2 p-6 sm:p-8">
             <h2 className="text-2xl font-bold tracking-tight">Add money to start investing</h2>
             <p className="mt-2 max-w-md text-muted">Move digital dollars into your account, then buy any stock from $1. Your money stays yours and you can withdraw anytime.</p>
@@ -67,6 +70,8 @@ export function Home() {
           <span className="font-medium">Buying power</span>
           <span className="num flex items-center gap-1 font-semibold">{bp !== null ? usd(bp) : <Skeleton className="h-5 w-20" />}<ChevronRight className="size-4 text-muted" /></span>
         </button>
+
+        {held.length > 0 && <GetStarted compact />}
 
         {(plans.length > 0 || orders.length > 0) && (
           <>
@@ -96,6 +101,9 @@ export function Home() {
             <div data-testid="holdings">{held.map((a) => <StockRow key={a.symbol} asset={a} now={now} sharesHeld={e18(portfolio!.holdings[a.address].balance)} />)}</div>
           </>
         )}
+
+        {market && <TopMovers assets={market.assets} />}
+        {market && <div className="mt-2"><NewsFeed assets={market.assets} /></div>}
 
         <div className="lg:hidden">
           <SectionTitle action={<Link to="/invest" className="text-sm font-semibold text-up">See all</Link>}>{held.length ? 'Discover' : 'Popular stocks'}</SectionTitle>
