@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom';
 import type { Asset } from '../lib/data';
-import { sliceRange, Sparkline } from './Chart';
+import { Sparkline } from './Chart';
 import { StockLogo, cx } from './ui';
 import { usd, shares as fmtShares } from '../lib/format';
 
 export function StockRow({ asset, now, sharesHeld, right }: { asset: Asset; now: number; sharesHeld?: number; right?: 'price' | 'change' }) {
   const up = asset.change24h >= 0;
-  const day = sliceRange(asset.history, '1D', now);
+  // Recent price points spaced evenly, so overnight and weekend gaps don't draw as flat lines.
+  const day = asset.history.slice(-80).map((p, i) => ({ t: i, v: p.v }));
+  void now;
   return (
     <Link to={`/stocks/${asset.symbol}`} className="flex items-center gap-3 rounded-2xl px-2 py-3 -mx-2 hover:bg-bg-2" data-testid={`stock-${asset.symbol}`}>
       <StockLogo symbol={asset.symbol} color={asset.color} />
