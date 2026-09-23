@@ -1,0 +1,13 @@
+out/
+cache/
+node_modules/
+.env
+*.env.local
+app/dist/
+broadcast/
+target/
+app/test/screens/
+.secrets/
+*.env.production.local
+.claude/
+.dist/
