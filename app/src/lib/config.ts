@@ -28,10 +28,11 @@ export const SLIPPAGE_BPS = 100; // 1%
 export const DEMO_ACCOUNT_KEY = '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d' as const; // Anvil #1, local only
 
 /** Display metadata. Prices, balances and contracts always come from the chain. */
-export const STOCK_INFO: Record<string, { name: string; color: string; about: string; sector: string }> = {
-  TSLA: { name: 'Tesla', color: '#cc2936', sector: 'Automotive', about: 'Tesla designs and makes electric vehicles, battery storage and solar products, and develops self-driving software.' },
-  AMZN: { name: 'Amazon', color: '#e88a00', sector: 'Consumer', about: 'Amazon runs a global online store and Amazon Web Services, the largest cloud computing platform.' },
-  PLTR: { name: 'Palantir', color: '#3b3f46', sector: 'Software', about: 'Palantir builds data analytics and AI platforms used by governments and large companies.' },
-  NFLX: { name: 'Netflix', color: '#b20710', sector: 'Media', about: 'Netflix is a subscription streaming service with films, series and games in over 190 countries.' },
-  AMD: { name: 'AMD', color: '#0b7a75', sector: 'Semiconductors', about: 'Advanced Micro Devices designs processors and graphics chips for PCs, data centres and gaming consoles.' },
+/** Display metadata. `logoBg` is the tile behind the company logo (public/logos/SYMBOL.png). */
+export const STOCK_INFO: Record<string, { name: string; color: string; about: string; sector: string; logoBg?: string }> = {
+  TSLA: { name: 'Tesla', color: '#cc2936', logoBg: '#ffffff', sector: 'Automotive', about: 'Tesla designs and makes electric vehicles, battery storage and solar products, and develops self-driving software.' },
+  AMZN: { name: 'Amazon', color: '#e88a00', logoBg: '#232f3e', sector: 'Consumer', about: 'Amazon runs a global online store and Amazon Web Services, the largest cloud computing platform.' },
+  PLTR: { name: 'Palantir', color: '#3b3f46', logoBg: '#ffffff', sector: 'Software', about: 'Palantir builds data analytics and AI platforms used by governments and large companies.' },
+  NFLX: { name: 'Netflix', color: '#b20710', logoBg: '#000000', sector: 'Media', about: 'Netflix is a subscription streaming service with films, series and games in over 190 countries.' },
+  AMD: { name: 'AMD', color: '#0b7a75', logoBg: '#000000', sector: 'Semiconductors', about: 'Advanced Micro Devices designs processors and graphics chips for PCs, data centres and gaming consoles.' },
 };
