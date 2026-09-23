@@ -94,6 +94,7 @@ export function MarketingFooter() {
             <p><b>Stock Tokens</b> are issued by Robinhood Assets (Jersey) Limited. They give economic exposure to US-listed shares, are not shares, carry no voting rights, may not be offered to US persons, and are restricted in some jurisdictions. Eligibility depends on where you live.</p>
             <p><b>GiFTED!</b> is open-source software for Robinhood Chain. It is not a broker-dealer, bank or investment adviser, and it does not give investment advice. Your Stock Tokens are held in your own account. Uninvested dollars are held by the GiFTED! smart contract and can be withdrawn only by you.</p>
             <p><b>This is a testnet prototype</b> built for the Arbitrum Open House buildathon. Prices on testnet are reference prices published by GiFTED!, and no real money is involved.</p>
+            <p>Company names and logos are trademarks of their respective owners, shown only to identify the Stock Tokens. GiFTED! is not affiliated with or endorsed by these companies.</p>
             <p className="pt-4 text-[13px]">© {new Date().getFullYear()} GiFTED!</p>
           </div>
         </div>
