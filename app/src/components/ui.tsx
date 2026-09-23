@@ -1,6 +1,7 @@
 import { useEffect, useRef, type ReactNode, type ButtonHTMLAttributes } from 'react';
 import { X, Loader2 } from 'lucide-react';
 import { STOCK_INFO } from '../lib/config';
+import { useMedia } from '../lib/useMedia';
 
 export function cx(...c: (string | false | null | undefined)[]) { return c.filter(Boolean).join(' '); }
 
@@ -53,29 +54,43 @@ export function SectionTitle({ children, action }: { children: ReactNode; action
   return <div className="mb-2 mt-8 flex items-center justify-between"><h2 className="text-xl font-bold tracking-tight">{children}</h2>{action}</div>;
 }
 
+/**
+ * Desktop (>=1024px): a non-modal panel docked on the left. No overlay, the page stays usable.
+ * Phones and tablets: a modal bottom sheet.
+ */
 export function Sheet({ open, onClose, title, children }: { open: boolean; onClose: () => void; title?: ReactNode; children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   const closeRef = useRef(onClose); closeRef.current = onClose;
+  const docked = useMedia('(min-width: 1024px)');
   useEffect(() => {
     if (!open) return;
     const prev = document.activeElement as HTMLElement | null;
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closeRef.current(); };
     document.addEventListener('keydown', onKey);
-    document.body.style.overflow = 'hidden';
-    setTimeout(() => ref.current?.querySelector<HTMLElement>('[data-autofocus], input, button:not([data-close])')?.focus(), 30);
-    return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = ''; prev?.focus?.(); };
-  }, [open]);
+    if (!docked) document.body.style.overflow = 'hidden';
+    setTimeout(() => ref.current?.querySelector<HTMLElement>('[data-autofocus], input, button:not([data-close])')?.focus({ preventScroll: true }), 30);
+    return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = ''; if (!docked) prev?.focus?.(); };
+  }, [open, docked]);
   if (!open) return null;
+  const label = typeof title === 'string' && title ? title : 'Panel';
+  const head = (
+    <div className="sticky top-0 z-10 flex items-center justify-between bg-card/95 px-5 pb-2 pt-4 backdrop-blur">
+      <div className="text-[15px] font-semibold">{title}</div>
+      <button data-close onClick={onClose} aria-label="Close" className="grid size-9 place-items-center rounded-full hover:bg-bg-2"><X className="size-5" /></button>
+    </div>
+  );
+  if (docked) return (
+    <aside ref={ref} role="complementary" aria-label={label} data-testid="side-panel"
+      className="fixed bottom-4 left-4 top-4 z-40 flex w-[400px] flex-col overflow-y-auto rounded-3xl border border-line bg-card shadow-[0_24px_60px_-20px_rgba(0,0,0,.35)] anim-panel">
+      {head}<div className="px-5 pb-5">{children}</div>
+    </aside>
+  );
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center anim-fade sm:items-center" role="presentation">
+    <div className="fixed inset-0 z-50 flex items-end justify-center anim-fade" role="presentation">
       <div className="absolute inset-0 bg-[var(--overlay)]" onClick={onClose} />
-      <div ref={ref} role="dialog" aria-modal="true" aria-label={typeof title === 'string' && title ? title : 'Dialog'}
+      <div ref={ref} role="dialog" aria-modal="true" aria-label={label}
         className="relative max-h-[92dvh] w-full overflow-y-auto rounded-t-3xl bg-card shadow-2xl anim-sheet safe-bottom sm:max-w-md sm:rounded-3xl">
-        <div className="sticky top-0 z-10 flex items-center justify-between bg-card/95 px-5 pb-2 pt-4 backdrop-blur">
-          <div className="text-[15px] font-semibold">{title}</div>
-          <button data-close onClick={onClose} aria-label="Close" className="grid size-9 place-items-center rounded-full hover:bg-bg-2"><X className="size-5" /></button>
-        </div>
-        <div className="px-5 pb-5">{children}</div>
+        {head}<div className="px-5 pb-5">{children}</div>
       </div>
     </div>
   );
