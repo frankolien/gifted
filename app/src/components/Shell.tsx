@@ -5,6 +5,7 @@ import { useApp } from '../state';
 import { cx, StockLogo } from './ui';
 import { localDemo } from '../lib/config';
 import { Mark } from './Brand';
+import { useMedia } from '../lib/useMedia';
 
 const NAV = [
   { to: '/', label: 'Home', icon: Home, end: true },
@@ -59,10 +60,13 @@ export function Toasts() {
 }
 
 export function Shell({ children }: { children: ReactNode }) {
-  const { market } = useApp();
+  const { market, sheet } = useApp();
   const tradingIssue = market && !market.tradingLive;
+  const desktop = useMedia('(min-width: 1024px)');
+  // On desktop the side panel docks on the left and the page slides over to make room for it.
+  const shift = desktop && !!sheet;
   return (
-    <div className="min-h-dvh pb-24 sm:pb-10">
+    <div className="min-h-dvh pb-24 transition-[padding] duration-300 ease-out sm:pb-10" style={{ paddingLeft: shift ? 432 : 0 }}>
       {localDemo && <div className="bg-fg py-1.5 text-center text-xs font-semibold text-bg">Demo mode · test money only · nothing here is real</div>}
       <header className="sticky top-0 z-30 border-b border-line bg-bg/95 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-[1280px] items-center gap-6 px-4 sm:px-6">
