@@ -1,47 +1,9 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { Check, ChevronRight, Newspaper } from 'lucide-react';
-import { useApp } from '../state';
+import { Link } from 'react-router-dom';
+import { Newspaper } from 'lucide-react';
 import { useNews, type Asset } from '../lib/data';
 import { Sparkline } from './Chart';
 import { StockLogo, SectionTitle, Skeleton, cx } from './ui';
 import { usd, ago } from '../lib/format';
-
-/** First-run checklist. Each step reflects real on-chain state and links to the action that completes it. */
-export function GetStarted({ compact }: { compact?: boolean }) {
-  const { portfolio, activity, open } = useApp();
-  const nav = useNavigate();
-  if (!portfolio || !activity) return null;
-  const steps = [
-    { label: 'Create your account', done: true, action: () => {} },
-    { label: 'Add money', done: portfolio.buyingPower > 0n || activity.some((a) => a.kind === 'deposit'), action: () => open({ type: 'add' }) },
-    { label: 'Buy your first stock', done: activity.some((a) => a.kind === 'buy'), action: () => nav('/stocks/TSLA') },
-    { label: 'Set up a recurring investment', done: portfolio.plans.length > 0, action: () => open({ type: 'trade', symbol: 'TSLA', side: 'buy', mode: 'recurring' }) },
-    { label: 'Place a limit order', done: portfolio.orders.length > 0, action: () => open({ type: 'trade', symbol: 'TSLA', side: 'buy', mode: 'limit' }) },
-  ];
-  const done = steps.filter((s) => s.done).length;
-  if (done === steps.length) return null;
-  const next = steps.findIndex((s) => !s.done);
-  return (
-    <section className={cx('rounded-3xl border border-line p-6', compact ? 'mt-6' : 'mt-6 sm:p-8')} data-testid="get-started">
-      <div className="flex items-end justify-between gap-4">
-        <div><h2 className="text-[22px] font-semibold tracking-tight">Get started</h2><p className="mt-1 text-[15px] text-muted">{done} of {steps.length} done · a few taps to your first automated investment</p></div>
-        <span className="num text-[15px] font-semibold text-up">{Math.round((done / steps.length) * 100)}%</span>
-      </div>
-      <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-bg-2"><div className="h-full rounded-full bg-up transition-all duration-700" style={{ width: `${(done / steps.length) * 100}%` }} /></div>
-      <ol className={cx('mt-5 grid gap-1', !compact && 'sm:grid-cols-1')}>
-        {steps.map((s, i) => (
-          <li key={s.label}>
-            <button disabled={s.done} onClick={s.action} className={cx('flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left transition', !s.done && 'hover:bg-bg-2', i === next && 'bg-bg-2')}>
-              <span className={cx('grid size-7 shrink-0 place-items-center rounded-full text-[13px] font-semibold', s.done ? 'bg-up text-on-up' : i === next ? 'bg-fg text-bg' : 'border border-line-2 text-muted')}>{s.done ? <Check className="size-4" strokeWidth={3} /> : i + 1}</span>
-              <span className={cx('flex-1 text-[15px]', s.done ? 'text-muted line-through' : 'font-medium')}>{s.label}</span>
-              {!s.done && <ChevronRight className="size-4 text-muted" />}
-            </button>
-          </li>
-        ))}
-      </ol>
-    </section>
-  );
-}
 
 export function TopMovers({ assets }: { assets: Asset[] }) {
   const movers = [...assets].sort((a, b) => Math.abs(b.changePct24h) - Math.abs(a.changePct24h)).slice(0, 3);
