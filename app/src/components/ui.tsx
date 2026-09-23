@@ -1,5 +1,6 @@
 import { useEffect, useRef, type ReactNode, type ButtonHTMLAttributes } from 'react';
 import { X, Loader2 } from 'lucide-react';
+import { STOCK_INFO } from '../lib/config';
 
 export function cx(...c: (string | false | null | undefined)[]) { return c.filter(Boolean).join(' '); }
 
@@ -20,7 +21,14 @@ export function Button({ variant = 'primary', size = 'md', loading, block, class
   );
 }
 
+/** Company logo on a circular tile; falls back to a ticker monogram for stocks without a bundled logo. */
 export function StockLogo({ symbol, color, size = 40 }: { symbol: string; color: string; size?: number }) {
+  const bg = STOCK_INFO[symbol]?.logoBg;
+  if (bg) return (
+    <span aria-hidden className="inline-grid shrink-0 place-items-center overflow-hidden rounded-full ring-1 ring-black/10 dark:ring-white/15" style={{ width: size, height: size, background: bg }}>
+      <img src={`/logos/${symbol}.png`} alt="" draggable={false} style={{ width: size * 0.58, height: size * 0.58 }} className="object-contain" />
+    </span>
+  );
   return (
     <span aria-hidden className="inline-grid shrink-0 place-items-center rounded-full font-bold text-white" style={{ width: size, height: size, background: color, fontSize: size * (symbol.length > 3 ? 0.28 : 0.34) }}>
       {symbol.slice(0, 4)}
