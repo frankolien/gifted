@@ -1,0 +1,41 @@
+{
+  "name": "gifted-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p . && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p .",
+    "relayer": "node server/relayer.js",
+    "demo": "node scripts/demo.js",
+    "test:e2e": "node test/e2e.mjs",
+    "testnet": "node scripts/testnet.mjs",
+    "relayer:testnet": "node --env-file=../.secrets/relayer.testnet.env server/relayer.js",
+    "build:testnet": "tsc -p . && vite build --mode production"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/inter-tight": "^5.3.0",
+    "@fontsource-variable/newsreader": "^5.3.0",
+    "@tanstack/react-query": "^5.103.2",
+    "lucide-react": "^1.47.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-router-dom": "^7.18.4",
+    "viem": "^2.56.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "d3-geo": "^3.1.1",
+    "puppeteer-core": "^24.43.1",
+    "tailwindcss": "^4.3.3",
+    "topojson-client": "^3.1.0",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.0",
+    "world-atlas": "^2.0.2"
+  }
+}
