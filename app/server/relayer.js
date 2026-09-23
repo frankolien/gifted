@@ -18,6 +18,7 @@
 import http from 'node:http';
 import { createPublicClient, createWalletClient, http as viemHttp, defineChain, parseEther, formatEther, isAddress } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
+import { fetchNews } from '../api/_news.js';
 
 const env = process.env;
 const RPC_URL = env.RPC_URL || 'https://rpc.testnet.chain.robinhood.com';
@@ -163,6 +164,7 @@ async function drip(address, ip) {
   return { status: 200, body: { funded: true, hash } };
 }
 
+let newsCache = null;
 const server = http.createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'content-type');
@@ -171,6 +173,10 @@ const server = http.createServer(async (req, res) => {
   const send = (code, body) => { res.writeHead(code, { 'content-type': 'application/json' }); res.end(JSON.stringify(body)); };
   try {
     if (req.method === 'GET' && req.url === '/health') return send(200, { ok: true, chainId: CHAIN_ID, broker: BROKER, ...status });
+    if (req.method === 'GET' && req.url === '/news') {
+      if (!newsCache || Date.now() - newsCache.at > 300_000) newsCache = { at: Date.now(), items: await fetchNews() };
+      return send(200, { items: newsCache.items });
+    }
     if (req.method === 'POST' && req.url === '/drip') {
       let raw = ''; for await (const c of req) { raw += c; if (raw.length > 2000) break; }
       const { address } = JSON.parse(raw || '{}');
