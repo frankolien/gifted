@@ -69,10 +69,10 @@ try {
 
   step('add $500 from the test bank');
   await clickText('Add money');
-  await waitText('Test bank', 10000, '[role=dialog]');
+  await waitText('Test bank', 10000, '[role=dialog], [data-testid=side-panel]');
   await typeAmount('500');
   await click('[data-testid=add-confirm]');
-  await waitText('$500.00 added', 60000, '[role=dialog]');
+  await waitText('$500.00 added', 60000, '[role=dialog], [data-testid=side-panel]');
   await clickText('Done');
   await waitText(/Buying power\s*\$500\.00/);
 
@@ -140,18 +140,18 @@ try {
   step('pause the recurring investment');
   await page.goto(URL, { waitUntil: 'networkidle0' });
   await clickText('of TSLA · every day');
-  await waitText('Recurring investment', 10000, '[role=dialog]');
-  await clickText('Pause', '[role=dialog] button');
+  await waitText('Recurring investment', 10000, '[role=dialog], [data-testid=side-panel]');
+  await clickText('Pause', '[role=dialog] button, [data-testid=side-panel] button');
   await waitText('Recurring investment paused', 30000);
   await waitText('Paused');
   await shot('08-home-invested');
 
   step('withdraw $20 to the wallet');
   await click('[data-testid=buying-power]');
-  await clickText('Withdraw', '[role=dialog] button');
+  await clickText('Withdraw', '[role=dialog] button, [data-testid=side-panel] button');
   await typeAmount('20');
   await click('[data-testid=withdraw-confirm]');
-  await waitText('$20.00 withdrawn', 60000, '[role=dialog]');
+  await waitText('$20.00 withdrawn', 60000, '[role=dialog], [data-testid=side-panel]');
   await clickText('Done');
 
   step('reload keeps you signed in');
@@ -179,7 +179,7 @@ try {
   await click('[data-testid=buy-cta]');
   await page.waitForFunction(() => (() => { const r = document.querySelector('[aria-label=Keypad]')?.getBoundingClientRect(); return !!r && r.width > 0 && r.height > 0; })(), { timeout: 15000 });
   for (const k of ['1', '5']) await page.click(`[aria-label=Keypad] button[aria-label="${k}"]`);
-  await waitText('$15', 5000, '[role=dialog]');
+  await waitText('$15', 5000, '[role=dialog], [data-testid=side-panel]');
   await shot('10-mobile-buy-sheet', false);
   await page.keyboard.press('Escape');
   await page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: 'dark' }]);
