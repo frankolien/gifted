@@ -1,0 +1,28 @@
+[package]
+name = "gifted-matcher"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[dependencies]
+stylus-sdk = "0.10.9"
+alloy-primitives = "=1.7.2"
+alloy-sol-types = "=1.7.2"
+
+[dev-dependencies]
+stylus-sdk = { version = "0.10.9", features = ["stylus-test"] }
+
+[features]
+default = ["stylus-sdk/mini-alloc"]
+export-abi = ["stylus-sdk/export-abi"]
+contract-client-gen = []
+
+[lib]
+crate-type = ["lib", "cdylib"]
+
+[profile.release]
+codegen-units = 1
+strip = true
+lto = true
+panic = "abort"
+opt-level = "z"
